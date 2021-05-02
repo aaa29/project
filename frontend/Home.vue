@@ -31,22 +31,39 @@
         <input type="text" :value="plus.i_content">
       </div>
       <div class="new_item">
-        <button @click="add_item">new item</button>
-        <input v-model="i_content" type="text">
-        <div>
-          <b-button id="ing" v-if="look_forW(i_content)" @click="add_item" v-b-modal.modal-1>variant1</b-button>
-
-          <b-modal id="modal-1" :title="i_content">
-            <b-list-group>
-              <b-list-group-item v-for="cheese in cheeses" :key="cheese">
-                <div class="cheese">
-                  <p>{{cheese.name}}</p>
-                  <button>+</button>
-                </div>
-              </b-list-group-item>
-            </b-list-group>
-          </b-modal>
-        </div>
+        
+        <b-input-group class="new_input">
+          <b-input-group-prepend>
+            <b-button variant="outline-info" @click="add_item">new item</b-button>
+          </b-input-group-prepend>
+          <b-form-input v-model="i_content" type="text"></b-form-input>
+          <b-input-group-append>
+            <!-- modal 1 -->
+            <b-button id="ing" v-if="look_forW(i_content)" v-b-modal.modal-1>variant1</b-button>
+            <b-modal id="modal-1" :title="i_content">
+              <b-list-group>
+                <b-list-group-item v-for="cheese in cheeses" :key="cheese">
+                  <div class="cheese">
+                    <b-button @click="choose_ing(cheese.name)">{{cheese.name}}</b-button>
+                  </div>
+                </b-list-group-item>
+              </b-list-group>
+            </b-modal>
+            <!-- modal 2 -->
+            <b-button id="ing" v-if="look_forW(i_content)" v-b-modal.modal-1>variant1</b-button>
+            <b-modal id="modal-1" :title="i_content">
+              <b-list-group>
+                <b-list-group-item v-for="cheese in cheeses" :key="cheese">
+                  <div class="cheese">
+                    <b-button @click="choose_ing(cheese.name)">{{cheese.name}}</b-button>
+                  </div>
+                </b-list-group-item>
+              </b-list-group>
+            </b-modal>
+          </b-input-group-append>
+        </b-input-group>
+        
+        
       </div>
     </div>
   </div>
@@ -98,29 +115,32 @@ export default {
         return true;
       }
       return false;
+    },
+    choose_ing(item) {
+      this.i_content = item
     }
   },
 
   mounted () {
     console.log(this.api_url)
-    axios.get(this.api_url+'/ings', {})
+    axios.get(this.api_url+'ings', {})
         .then((res) =>{
           console.log(res.data)
-            this.cheeses = res.data.map(field => field.libel_dom_en)
+            this.cheeses = res.data
         })
         .catch((err) =>{
             console.log("amineeeeee",err)
         })
   },
 
-  computed: {
-    computed : {
+  
+  computed : {
 
-        api_url() {
-            return this.$store.state.api_url;
-        }
-    }
+      api_url() {
+          return this.$store.state.api_url;
+      }
   }
+  
 }
 </script>
 
@@ -163,5 +183,11 @@ export default {
 .cheese {
   display : flex;
   flex-direction : row;
+}
+
+.new_input {
+  width : 30%;
+
+
 }
 </style>
